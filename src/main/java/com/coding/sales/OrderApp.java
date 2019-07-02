@@ -1,5 +1,7 @@
 package com.coding.sales;
 
+import java.text.ParseException;
+
 import com.coding.sales.core.OrderCalculate;
 import com.coding.sales.input.OrderCommand;
 import com.coding.sales.output.OrderRepresentation;
@@ -36,7 +38,12 @@ public class OrderApp {
 
         OrderCalculate orderCalculate = new OrderCalculate();
         orderCalculate.init();
-        result = orderCalculate.get(command);
+        try {
+			result = orderCalculate.getOrderRepresentation(command);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         //TODO: 请完成需求指定的功能
 
         return result;
