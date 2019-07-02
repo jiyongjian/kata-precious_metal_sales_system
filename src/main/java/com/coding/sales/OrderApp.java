@@ -1,5 +1,6 @@
 package com.coding.sales;
 
+import com.coding.sales.core.OrderCalculate;
 import com.coding.sales.input.OrderCommand;
 import com.coding.sales.output.OrderRepresentation;
 
@@ -27,13 +28,15 @@ public class OrderApp {
         OrderCommand command = OrderCommand.from(orderCommand);
         OrderRepresentation result = checkout(command);
         
-//        return result.toString();
-        return "";
+        return result.toString();
     }
 
     OrderRepresentation checkout(OrderCommand command) {
         OrderRepresentation result = null;
 
+        OrderCalculate orderCalculate = new OrderCalculate();
+        orderCalculate.init();
+        result = orderCalculate.get(command);
         //TODO: 请完成需求指定的功能
 
         return result;

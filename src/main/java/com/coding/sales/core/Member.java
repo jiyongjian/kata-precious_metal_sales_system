@@ -11,6 +11,8 @@ public class Member {
 	private String cardNo;
 	private int memberPoints;
 	
+	public Member() {		
+	}
 	public Member(String memberNo, String memberName, String cardNo, int memberPoints) {
 		super();
 		this.memberNo = memberNo;
