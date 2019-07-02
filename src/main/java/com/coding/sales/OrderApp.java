@@ -27,7 +27,8 @@ public class OrderApp {
         OrderCommand command = OrderCommand.from(orderCommand);
         OrderRepresentation result = checkout(command);
         
-        return result.toString();
+//        return result.toString();
+        return "";
     }
 
     OrderRepresentation checkout(OrderCommand command) {
