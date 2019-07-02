@@ -20,13 +20,14 @@ import com.coding.sales.output.PaymentRepresentation;
 
 /**
  * 订单处理
- * @author Administrator
+ * @author jiyongjian
  */
 public class OrderCalculate {
 
 	private Map productMap = new HashMap<String, Product>();
 	private Map memberMap = new HashMap<String, Member>();
 
+	//产品及用户信息初始化
 	public void init() {
 		productMap.put("001001", new Product("001001", "世园会五十国钱币册", "册", new BigDecimal("998.00")));
 		productMap.put("001002", new Product("001002", "2019北京世园会纪念银章大全40g", "盒", new BigDecimal("1380.00"), "9折券"));
@@ -42,14 +43,16 @@ public class OrderCalculate {
 		memberMap.put("9230009999", new Member("9230009999", "张三", 198860));
 	}
 
+	//获取用于打印的销售凭证
 	public OrderRepresentation getOrderRepresentation(OrderCommand orderCommand) throws ParseException {
-
+		Member member = (Member) memberMap.get(orderCommand.getMemberId());
+		
 		DateFormat formate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String orderId = orderCommand.getOrderId();
 		Date createTime = formate.parse(orderCommand.getCreateTime());
 		String memberNo = orderCommand.getMemberId();
-		String memberName = "";
-		String oldMemberType = "";
+		String memberName = member.getMemberName();
+		String oldMemberType = member.getMemberType();
 		String newMemberType = "";
 		int memberPointsIncreased = 0;
 		int memberPoints = 0;
@@ -59,11 +62,9 @@ public class OrderCalculate {
 		BigDecimal totalDiscountPrice = new BigDecimal(0);
 		BigDecimal receivables = new BigDecimal(0);
 		List<PaymentRepresentation> payments = new ArrayList<PaymentRepresentation>();
-		List<String> discountCards = new ArrayList<String>();
+		List<String> discountCards = orderCommand.getDiscounts();
 
-		Map members = memberMap;
-		Map products = productMap;
-
+		//获取支付方式列表
 		List<PaymentCommand> paymentCommands = orderCommand.getPayments();
 		for (int i = 0; i < paymentCommands.size(); i++) {
 			PaymentCommand paymentCommand = paymentCommands.get(i);
@@ -71,16 +72,11 @@ public class OrderCalculate {
 			payments.add(paymentRepresentation);
 		}
 
-		discountCards = orderCommand.getDiscounts();
-
-		Member member = (Member) members.get(orderCommand.getMemberId());
-		memberName = member.getMemberName();
-		oldMemberType = member.getMemberType();
 		List<OrderItemCommand> orderItems2 = orderCommand.getItems();
         //遍历订单列表，计算总金额及优惠信息
 		for (int i = 0; i < orderItems2.size(); i++) {
 			OrderItemCommand orderIterm = orderItems2.get(i);
-			Product prod = (Product) products.get(orderIterm.getProduct());
+			Product prod = (Product) productMap.get(orderIterm.getProduct());
 			// 计算单个产品总价
 			// 总价=单价*数量
 			BigDecimal prodTotAmount = prod.getPrice().multiply(orderIterm.getAmount());
