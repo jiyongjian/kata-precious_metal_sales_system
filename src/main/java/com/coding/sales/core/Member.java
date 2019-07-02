@@ -33,7 +33,15 @@ public class Member {
 		this.memberName = memberName;
 	}
 	public String getOldMemberType() {
-		return oldMemberType;
+		if(memberPoints<10000){
+			return "普卡";
+		}else if(memberPoints<50000){
+			return "金卡";
+		}else if(memberPoints<50000){
+			return "白金卡";
+		}else{
+			return "钻石卡";
+		}
 	}
 	public void setOldMemberType(String oldMemberType) {
 		this.oldMemberType = oldMemberType;

@@ -24,13 +24,13 @@ public class OrderCalculate {
 	private Map memberMap = new HashMap<String , Member>();
 	
 	public void init(){
-		productMap.put("", new Product("001001", "世园会五十国钱币册", "册",new BigDecimal("998.00")));
-		productMap.put("", new Product("001002", "2019北京世园会纪念银章大全40g","盒", new BigDecimal("1380.00"),"9折券"));
-		productMap.put("", new Product("003001", "招财进宝","条", new BigDecimal("1580.00")));
-		productMap.put("", new Product("003002", "水晶之恋","条" ,new BigDecimal("980.00"),null,"4,5"));
-		productMap.put("", new Product("002002", "中国经典钱币套装","套", new BigDecimal("998.00"),null,"2,3"));
-		productMap.put("", new Product("002001", "守扩之羽比翼双飞4.8g","条", new BigDecimal("1080.00"),"95折券","4,5"));
-		productMap.put("", new Product("002003", "中国银象棋12g","套", new BigDecimal("698.00"),"9折券","1,2,3"));
+		productMap.put("001001", new Product("001001", "世园会五十国钱币册", "册",new BigDecimal("998.00")));
+		productMap.put("001002", new Product("001002", "2019北京世园会纪念银章大全40g","盒", new BigDecimal("1380.00"),"9折券"));
+		productMap.put("003001", new Product("003001", "招财进宝","条", new BigDecimal("1580.00")));
+		productMap.put("003002", new Product("003002", "水晶之恋","条" ,new BigDecimal("980.00"),null,"4,5"));
+		productMap.put("002002", new Product("002002", "中国经典钱币套装","套", new BigDecimal("998.00"),null,"2,3"));
+		productMap.put("002001", new Product("002001", "守扩之羽比翼双飞4.8g","条", new BigDecimal("1080.00"),"95折券","4,5"));
+		productMap.put("002003", new Product("002003", "中国银象棋12g","套", new BigDecimal("698.00"),"9折券","1,2,3"));
 		
 		memberMap.put("6236609999", new Member("6236609999", "马丁", "6236609999", 9860));
 		memberMap.put("6630009999", new Member("6630009999", "王立", "6630009999", 48860));
@@ -38,10 +38,9 @@ public class OrderCalculate {
 		memberMap.put("9230009999", new Member("9230009999", "张三", "9230009999", 198860));		
 	}
 
-	public OrderRepresentation calculate(OrderCommand orderCommand) throws ParseException {
+public OrderRepresentation getOrderRepresentation(OrderCommand orderCommand) throws ParseException {
 		
-		
-		DateFormat formate = new SimpleDateFormat();
+		DateFormat formate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String orderId= orderCommand.getOrderId();
 		Date createTime = formate.parse(orderCommand.getCreateTime());
 		String memberNo= orderCommand.getMemberId();
@@ -57,10 +56,8 @@ public class OrderCalculate {
 		BigDecimal receivables  = new BigDecimal(0);
 		List<PaymentRepresentation>  payments = new ArrayList<PaymentRepresentation>();
 		List<String> discountCards = new ArrayList<String>();
-		
 
 		
-//		Map members =getMemberMaps();
 		Map members =memberMap;
 		Map products =productMap;
 
@@ -77,7 +74,7 @@ public class OrderCalculate {
 		
 		
 		
-			Member member = (Member) members.get(members.get(orderCommand.getMemberId()));
+			Member member = (Member) members.get(orderCommand.getMemberId());
 			memberName =member.getMemberName();	
 			oldMemberType = member.getOldMemberType();
 		List<OrderItemCommand> orderItems2 = orderCommand.getItems();
@@ -93,7 +90,7 @@ public class OrderCalculate {
 			BigDecimal prodTotAmount = prod.getPrice().multiply(orderIterm.getAmount());
 
 			//打折金额=总价*折扣
-			BigDecimal prodDisTotAmount = new BigDecimal(0);
+			BigDecimal prodDisTotAmount = prodTotAmount;
 			if (prod.getDiscout() != null&& !"".equals(prod.getDiscout())) {
 				if (prod.getDiscout().equals(orderCommand.getDiscounts().get(0))) {
 					if ("9折券".equals(prod.getDiscout())) {
@@ -107,41 +104,43 @@ public class OrderCalculate {
 			
 			String youhui=prod.getFullDiscount();
 			
-			BigDecimal prodDisTotAmount2  = new BigDecimal(0);
-			BigDecimal prodDisTotAmount3  = new BigDecimal(0);
+			BigDecimal prodDisTotAmount2  = prodTotAmount;
+			BigDecimal prodDisTotAmount3  = prodTotAmount;
 			
-			
-			if(youhui.contains("1")||youhui.contains("2")||youhui.contains("3")||youhui.contains("4")||youhui.contains("5")){
+			if(youhui!=null){
 				
-				//优惠方案
-				if(youhui.contains("1")||youhui.contains("2")||youhui.contains("3")){
+				if(youhui.contains("1")||youhui.contains("2")||youhui.contains("3")||youhui.contains("4")||youhui.contains("5")){
 					
-					if(prodTotAmount.compareTo(new BigDecimal("1000"))>0 && youhui.contains("1")){
-						prodDisTotAmount2 = prodDisTotAmount.subtract(new BigDecimal("10"));
-					}
-					if(prodTotAmount.compareTo(new BigDecimal("2000"))>0 && youhui.contains("2")){
-						prodDisTotAmount2 = prodDisTotAmount.subtract(new BigDecimal("30"));
-					}
-					if(prodTotAmount.compareTo(new BigDecimal("3000"))>0 && youhui.contains("3")){
-						prodDisTotAmount2 = prodDisTotAmount.subtract(new BigDecimal("350"));
-					}
-					
-					if(youhui.contains("4")||youhui.contains("5")){
+					//优惠方案
+					if(youhui.contains("1")||youhui.contains("2")||youhui.contains("3")){
 						
-						if(youhui.contains("4")&&youhui.contains("5")){
+						if(prodTotAmount.compareTo(new BigDecimal("1000"))>0 && youhui.contains("1")){
+							prodDisTotAmount2 = prodTotAmount.subtract(new BigDecimal("10"));
+						}
+						if(prodTotAmount.compareTo(new BigDecimal("2000"))>0 && youhui.contains("2")){
+							prodDisTotAmount2 = prodTotAmount.subtract(new BigDecimal("30"));
+						}
+						if(prodTotAmount.compareTo(new BigDecimal("3000"))>0 && youhui.contains("3")){
+							prodDisTotAmount2 = prodTotAmount.subtract(new BigDecimal("350"));
+						}
+						
+						if(youhui.contains("4")||youhui.contains("5")){
 							
-							if (orderIterm.getAmount().compareTo(new BigDecimal(3)) > 0) {
-								 prodDisTotAmount3 = prod.getPrice().multiply(orderIterm.getAmount().subtract(new BigDecimal(1)));
-							}else if(orderIterm.getAmount().compareTo(new BigDecimal(3))==0){
-								 prodDisTotAmount3 = prod.getPrice().multiply(orderIterm.getAmount().subtract(new BigDecimal(0.5)));
-							}
-						}else if (youhui.contains("4")){
-							if(orderIterm.getAmount().compareTo(new BigDecimal(2)) > 0){
-								 prodDisTotAmount3 = prod.getPrice().multiply(orderIterm.getAmount().subtract(new BigDecimal(0.5)));
-							}
-						}else if(youhui.contains("5")){
-							if(orderIterm.getAmount().compareTo(new BigDecimal(3)) > 0){
-								 prodDisTotAmount3 = prod.getPrice().multiply(orderIterm.getAmount().subtract(new BigDecimal(1)));
+							if(youhui.contains("4")&&youhui.contains("5")){
+								
+								if (orderIterm.getAmount().compareTo(new BigDecimal(3)) > 0) {
+									prodDisTotAmount3 = prod.getPrice().multiply(orderIterm.getAmount().subtract(new BigDecimal(1)));
+								}else if(orderIterm.getAmount().compareTo(new BigDecimal(3))==0){
+									prodDisTotAmount3 = prod.getPrice().multiply(orderIterm.getAmount().subtract(new BigDecimal(0.5)));
+								}
+							}else if (youhui.contains("4")){
+								if(orderIterm.getAmount().compareTo(new BigDecimal(2)) > 0){
+									prodDisTotAmount3 = prod.getPrice().multiply(orderIterm.getAmount().subtract(new BigDecimal(0.5)));
+								}
+							}else if(youhui.contains("5")){
+								if(orderIterm.getAmount().compareTo(new BigDecimal(3)) > 0){
+									prodDisTotAmount3 = prod.getPrice().multiply(orderIterm.getAmount().subtract(new BigDecimal(1)));
+								}
 							}
 						}
 					}
@@ -155,22 +154,33 @@ public class OrderCalculate {
 			BigDecimal prodTotAmountDis =  getMinDisAmout(amoutList);
 			totalPrice = totalPrice.add(prodTotAmount);
 			receivables = receivables.add(prodTotAmountDis);
+			
 			OrderItemRepresentation orderItemRepresentation = new OrderItemRepresentation(
 					prod.getProductNo(), prod.getProductName(),
-					prod.getPrice(), prodTotAmount, prodTotAmountDis);
+					prod.getPrice(), orderIterm.getAmount(), prodTotAmount);
 			orderItems.add(orderItemRepresentation);	
 			
-			DiscountItemRepresentation discountItemRepresentation = new DiscountItemRepresentation(
-					prod.getProductNo(), prod.getProductName(),
-					prodTotAmount.subtract(prodTotAmountDis));
-			discounts.add(discountItemRepresentation);
+			
+			totalDiscountPrice=totalDiscountPrice.add(prodTotAmount.subtract(prodTotAmountDis));
+			if(prodTotAmount.compareTo(prodTotAmountDis)>0){
+				
+				DiscountItemRepresentation discountItemRepresentation = new DiscountItemRepresentation(
+						prod.getProductNo(), prod.getProductName(),
+						prodTotAmount.subtract(prodTotAmountDis));
+				discounts.add(discountItemRepresentation);
+			}
 			
 			
 		
 
 		}
 
-		memberPointsIncreased = getOrderPoints(member,totalDiscountPrice);
+		memberPointsIncreased = getOrderPoints(member,receivables);
+		memberPoints = member.getMemberPoints()+memberPointsIncreased;
+//		member.setMemberPoints(member.getMemberPoints()+memberPointsIncreased);
+		
+		
+		newMemberType = new Member("", "", "", memberPoints+memberPointsIncreased).getOldMemberType();
 		
 		OrderRepresentation orderRepresentation  = new OrderRepresentation(
 				orderId, 
@@ -191,18 +201,26 @@ public class OrderCalculate {
 		
 		return orderRepresentation;
 	}
-	
-	
-	
-	private BigDecimal getMinDisAmout(List<BigDecimal> amountList){
 
-		//list从小到大排序
-		
-		
-		return amountList.get(0);
+private BigDecimal getMinDisAmout(List<BigDecimal> amountList){
+
+	//list从小到大排序
+	BigDecimal amt = amountList.get(0);
+	for(int i =1;i<amountList.size();i++){
+		BigDecimal amt2 = amountList.get(i);
+		if(amt2.compareTo(amt)>0){
+			
+		}else{
+			amt  = amt2;
+		}
 		
 	}
+		
+	return amt;
 	
+}
+	
+	/*根据金额获取用户新增积分	 */
 	public  int getOrderPoints(Member member,BigDecimal totAmount){
 		int incresPoint = 0;
 		int point = member.getMemberPoints();
@@ -233,7 +251,4 @@ public class OrderCalculate {
 	public void setMemberMap(Map memberMap) {
 		this.memberMap = memberMap;
 	}
-	
-	
-
 }
