@@ -203,9 +203,37 @@ public class OrderCalculate {
 		
 	}
 	
-	private  int getOrderPoints(Member member,BigDecimal totAmount){
-		
-		return 0;
+	public  int getOrderPoints(Member member,BigDecimal totAmount){
+		int incresPoint = 0;
+		int point = member.getMemberPoints();
+		if(point<10000){
+			incresPoint=totAmount.setScale(0, BigDecimal.ROUND_DOWN ).intValue();
+		}else if(point<50000){
+			incresPoint = totAmount.multiply(new BigDecimal("1.5")).setScale(0, BigDecimal.ROUND_DOWN ).intValue();
+		}else if(point<100000){
+			incresPoint = totAmount.multiply(new BigDecimal("1.8")).setScale(0, BigDecimal.ROUND_DOWN ).intValue();
+		}else {
+			incresPoint = totAmount.multiply(new BigDecimal("2")).setScale(0, BigDecimal.ROUND_DOWN ).intValue();
+		}
+		return incresPoint;
 	}
+
+	public Map getProductMap() {
+		return productMap;
+	}
+
+	public void setProductMap(Map productMap) {
+		this.productMap = productMap;
+	}
+
+	public Map getMemberMap() {
+		return memberMap;
+	}
+
+	public void setMemberMap(Map memberMap) {
+		this.memberMap = memberMap;
+	}
+	
+	
 
 }
