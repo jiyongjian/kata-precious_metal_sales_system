@@ -1,5 +1,7 @@
 package com.coding.sales.core;
 
+import java.math.BigDecimal;
+
 /**
  * 产品信息
  * @author Administrator
@@ -7,10 +9,18 @@ package com.coding.sales.core;
 public class Product {
 	private String productNo;
 	private String productName;
-	private String  price;
+	private BigDecimal  price;
 	private String  discout;//支持的券
 	
 	
+	public Product(String productNo, String productName, BigDecimal price,
+			String discout) {
+		super();
+		this.productNo = productNo;
+		this.productName = productName;
+		this.price = price;
+		this.discout = discout;
+	}
 	public String getDiscout() {
 		return discout;
 	}
@@ -29,11 +39,12 @@ public class Product {
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
-	public String getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
-	public void setPrice(String price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
+	
 	
 }

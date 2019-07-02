@@ -9,8 +9,15 @@ public class Member {
 	private String oldMemberType;
 	private String newMemberType;
 	private String cardNo;
-	private String memberPoints;
+	private int memberPoints;
 	
+	public Member(String memberNo, String memberName, String cardNo, int memberPoints) {
+		super();
+		this.memberNo = memberNo;
+		this.memberName = memberName;
+		this.cardNo = cardNo;
+		this.memberPoints = memberPoints;
+	}
 	public String getMemberNo() {
 		return memberNo;
 	}
@@ -30,9 +37,17 @@ public class Member {
 		this.oldMemberType = oldMemberType;
 	}
 	public String getNewMemberType() {
-		return newMemberType;
+		if(memberPoints<10000){
+			return "普卡";
+		}else if(memberPoints<50000){
+			return "金卡";
+		}else if(memberPoints<50000){
+			return "白金卡";
+		}else{
+			return "钻石卡";
+		}
 	}
-	public void setNewMemberType(String newMemberType) {
+	public void setNewMemberType(String newMemberType) {		
 		this.newMemberType = newMemberType;
 	}
 	public String getCardNo() {
@@ -41,10 +56,10 @@ public class Member {
 	public void setCardNo(String cardNo) {
 		this.cardNo = cardNo;
 	}
-	public String getMemberPoints() {
+	public int getMemberPoints() {
 		return memberPoints;
 	}
-	public void setMemberPoints(String memberPoints) {
+	public void setMemberPoints(int memberPoints) {
 		this.memberPoints = memberPoints;
 	}
 	
