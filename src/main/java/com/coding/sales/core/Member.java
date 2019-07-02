@@ -6,18 +6,16 @@ package com.coding.sales.core;
 public class Member {
 	private String memberNo;
 	private String memberName;
-	private String oldMemberType;
-	private String newMemberType;
-	private String cardNo;
+	private String memberType;
+//	private String cardNo;
 	private int memberPoints;
 	
 	public Member() {		
 	}
-	public Member(String memberNo, String memberName, String cardNo, int memberPoints) {
+	public Member(String memberNo, String memberName, int memberPoints) {
 		super();
 		this.memberNo = memberNo;
 		this.memberName = memberName;
-		this.cardNo = cardNo;
 		this.memberPoints = memberPoints;
 	}
 	public String getMemberNo() {
@@ -32,7 +30,9 @@ public class Member {
 	public void setMemberName(String memberName) {
 		this.memberName = memberName;
 	}
-	public String getOldMemberType() {
+	
+
+	public String getMemberType() {
 		if(memberPoints<10000){
 			return "普卡";
 		}else if(memberPoints<50000){
@@ -43,29 +43,7 @@ public class Member {
 			return "钻石卡";
 		}
 	}
-	public void setOldMemberType(String oldMemberType) {
-		this.oldMemberType = oldMemberType;
-	}
-	public String getNewMemberType() {
-		if(memberPoints<10000){
-			return "普卡";
-		}else if(memberPoints<50000){
-			return "金卡";
-		}else if(memberPoints<50000){
-			return "白金卡";
-		}else{
-			return "钻石卡";
-		}
-	}
-	public void setNewMemberType(String newMemberType) {		
-		this.newMemberType = newMemberType;
-	}
-	public String getCardNo() {
-		return cardNo;
-	}
-	public void setCardNo(String cardNo) {
-		this.cardNo = cardNo;
-	}
+
 	public int getMemberPoints() {
 		return memberPoints;
 	}

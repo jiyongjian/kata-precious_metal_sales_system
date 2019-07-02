@@ -36,10 +36,10 @@ public class OrderCalculate {
 		productMap.put("002001", new Product("002001", "守扩之羽比翼双飞4.8g", "条", new BigDecimal("1080.00"), "95折券", "4,5"));
 		productMap.put("002003", new Product("002003", "中国银象棋12g", "套", new BigDecimal("698.00"), "9折券", "1,2,3"));
 
-		memberMap.put("6236609999", new Member("6236609999", "马丁", "6236609999", 9860));
-		memberMap.put("6630009999", new Member("6630009999", "王立", "6630009999", 48860));
-		memberMap.put("8230009999", new Member("8230009999", "李想", "8230009999", 98860));
-		memberMap.put("9230009999", new Member("9230009999", "张三", "9230009999", 198860));
+		memberMap.put("6236609999", new Member("6236609999", "马丁", 9860));
+		memberMap.put("6630009999", new Member("6630009999", "王立", 48860));
+		memberMap.put("8230009999", new Member("8230009999", "李想", 98860));
+		memberMap.put("9230009999", new Member("9230009999", "张三", 198860));
 	}
 
 	public OrderRepresentation getOrderRepresentation(OrderCommand orderCommand) throws ParseException {
@@ -75,7 +75,7 @@ public class OrderCalculate {
 
 		Member member = (Member) members.get(orderCommand.getMemberId());
 		memberName = member.getMemberName();
-		oldMemberType = member.getOldMemberType();
+		oldMemberType = member.getMemberType();
 		List<OrderItemCommand> orderItems2 = orderCommand.getItems();
         //遍历订单列表，计算总金额及优惠信息
 		for (int i = 0; i < orderItems2.size(); i++) {
@@ -104,9 +104,9 @@ public class OrderCalculate {
 		}
 
 		memberPointsIncreased = getOrderPoints(member, receivables);
-		memberPoints = member.getMemberPoints() + memberPointsIncreased;
-
-		newMemberType = new Member("", "", "", memberPoints + memberPointsIncreased).getOldMemberType();
+		memberPoints = member.getMemberPoints() + memberPointsIncreased;//累计积分
+		member.setMemberPoints(memberPoints);
+		newMemberType = member.getMemberType();//获取用户新的卡等级
 
 		OrderRepresentation orderRepresentation = new OrderRepresentation(orderId, createTime, memberNo, memberName, oldMemberType, newMemberType, memberPointsIncreased,
 				memberPoints, orderItems, totalPrice, discounts, totalDiscountPrice, receivables, payments, discountCards);
