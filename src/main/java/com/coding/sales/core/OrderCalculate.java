@@ -74,12 +74,12 @@ public class OrderCalculate {
 		oldMemberType = member.getOldMemberType();
 		List<OrderItemCommand> orderItems2 = orderCommand.getItems();
 
-		// 计算单个产品总价
 		for (int i = 0; i < orderItems2.size(); i++) {
 			OrderItemCommand orderIterm = orderItems2.get(i);
 
 			Product prod = (Product) products.get(orderIterm.getProduct());
 
+			// 计算单个产品总价
 			// 总价=单价*数量
 			BigDecimal prodTotAmount = prod.getPrice().multiply(orderIterm.getAmount());
 
@@ -131,6 +131,7 @@ public class OrderCalculate {
 		return prodDisTotAmount;
 	}
 
+	// 获取单个产品在满减规则下的产品总价
 	private BigDecimal getFullDisCount(Product product, BigDecimal count, BigDecimal prodTotAmount) {
 		String fullDiscount = product.getFullDiscount();
 		BigDecimal prodDisTotAmount2 = prodTotAmount;
@@ -139,33 +140,28 @@ public class OrderCalculate {
 			if (fullDiscount.contains("1") || fullDiscount.contains("2") || fullDiscount.contains("3") || fullDiscount.contains("4") || fullDiscount.contains("5")) {
 				// 优惠方案
 				if (fullDiscount.contains("1") || fullDiscount.contains("2") || fullDiscount.contains("3")) {
-
-					if (prodTotAmount.compareTo(new BigDecimal("1000")) > 0 && fullDiscount.contains("1")) {
-						prodDisTotAmount2 = prodTotAmount.subtract(new BigDecimal("10"));
-					}
-					if (prodTotAmount.compareTo(new BigDecimal("2000")) > 0 && fullDiscount.contains("2")) {
-						prodDisTotAmount2 = prodTotAmount.subtract(new BigDecimal("30"));
-					}
 					if (prodTotAmount.compareTo(new BigDecimal("3000")) > 0 && fullDiscount.contains("3")) {
 						prodDisTotAmount2 = prodTotAmount.subtract(new BigDecimal("350"));
+					} else if (prodTotAmount.compareTo(new BigDecimal("2000")) > 0 && fullDiscount.contains("2")) {
+						prodDisTotAmount2 = prodTotAmount.subtract(new BigDecimal("30"));
+					} else if (prodTotAmount.compareTo(new BigDecimal("1000")) > 0 && fullDiscount.contains("1")) {
+						prodDisTotAmount2 = prodTotAmount.subtract(new BigDecimal("10"));
 					}
-					if (fullDiscount.contains("4") || fullDiscount.contains("5")) {
-
-						if (fullDiscount.contains("4") && fullDiscount.contains("5")) {
-
-							if (count.compareTo(new BigDecimal(3)) > 0) {
-								prodDisTotAmount3 = product.getPrice().multiply(count.subtract(new BigDecimal(1)));
-							} else if (count.compareTo(new BigDecimal(3)) == 0) {
-								prodDisTotAmount3 = product.getPrice().multiply(count.subtract(new BigDecimal(0.5)));
-							}
-						} else if (fullDiscount.contains("4")) {
-							if (count.compareTo(new BigDecimal(2)) > 0) {
-								prodDisTotAmount3 = product.getPrice().multiply(count.subtract(new BigDecimal(0.5)));
-							}
-						} else if (fullDiscount.contains("5")) {
-							if (count.compareTo(new BigDecimal(3)) > 0) {
-								prodDisTotAmount3 = product.getPrice().multiply(count.subtract(new BigDecimal(1)));
-							}
+				}
+				if (fullDiscount.contains("4") || fullDiscount.contains("5")) {
+					if (fullDiscount.contains("4") && fullDiscount.contains("5")) {
+						if (count.compareTo(new BigDecimal(3)) > 0) {
+							prodDisTotAmount3 = product.getPrice().multiply(count.subtract(new BigDecimal(1)));
+						} else if (count.compareTo(new BigDecimal(3)) == 0) {
+							prodDisTotAmount3 = product.getPrice().multiply(count.subtract(new BigDecimal(0.5)));
+						}
+					} else if (fullDiscount.contains("4")) {
+						if (count.compareTo(new BigDecimal(2)) > 0) {
+							prodDisTotAmount3 = product.getPrice().multiply(count.subtract(new BigDecimal(0.5)));
+						}
+					} else if (fullDiscount.contains("5")) {
+						if (count.compareTo(new BigDecimal(3)) > 0) {
+							prodDisTotAmount3 = product.getPrice().multiply(count.subtract(new BigDecimal(1)));
 						}
 					}
 				}
@@ -174,8 +170,8 @@ public class OrderCalculate {
 		return prodDisTotAmount2.compareTo(prodDisTotAmount3) > 0 ? prodDisTotAmount3 : prodDisTotAmount2;
 	}
 
+	// 获取两种优惠方案的最小金额，即为优惠后的总价
 	private BigDecimal getMinDisAmout(List<BigDecimal> amountList) {
-
 		// list从小到大排序
 		BigDecimal amt = amountList.get(0);
 		for (int i = 1; i < amountList.size(); i++) {
@@ -185,11 +181,8 @@ public class OrderCalculate {
 			} else {
 				amt = amt2;
 			}
-
 		}
-
 		return amt;
-
 	}
 
 	/* 根据金额获取用户新增积分 */
