@@ -18,6 +18,10 @@ import com.coding.sales.output.OrderItemRepresentation;
 import com.coding.sales.output.OrderRepresentation;
 import com.coding.sales.output.PaymentRepresentation;
 
+/**
+ * 订单处理
+ * @author Administrator
+ */
 public class OrderCalculate {
 
 	private Map productMap = new HashMap<String, Product>();
@@ -73,12 +77,10 @@ public class OrderCalculate {
 		memberName = member.getMemberName();
 		oldMemberType = member.getOldMemberType();
 		List<OrderItemCommand> orderItems2 = orderCommand.getItems();
-
+        //遍历订单列表，计算总金额及优惠信息
 		for (int i = 0; i < orderItems2.size(); i++) {
 			OrderItemCommand orderIterm = orderItems2.get(i);
-
 			Product prod = (Product) products.get(orderIterm.getProduct());
-
 			// 计算单个产品总价
 			// 总价=单价*数量
 			BigDecimal prodTotAmount = prod.getPrice().multiply(orderIterm.getAmount());
@@ -90,13 +92,10 @@ public class OrderCalculate {
 			totalPrice = totalPrice.add(prodTotAmount);
 			receivables = receivables.add(prodTotAmountDis);
 
-			OrderItemRepresentation orderItemRepresentation = new OrderItemRepresentation(prod.getProductNo(), prod.getProductName(), prod.getPrice(), orderIterm.getAmount(),
-					prodTotAmount);
-			orderItems.add(orderItemRepresentation);
+			orderItems.add(new OrderItemRepresentation(prod.getProductNo(), prod.getProductName(), prod.getPrice(), orderIterm.getAmount(),prodTotAmount));
 
 			totalDiscountPrice = totalDiscountPrice.add(prodTotAmount.subtract(prodTotAmountDis));
 			if (prodTotAmount.compareTo(prodTotAmountDis) > 0) {
-
 				DiscountItemRepresentation discountItemRepresentation = new DiscountItemRepresentation(prod.getProductNo(), prod.getProductName(),
 						prodTotAmount.subtract(prodTotAmountDis));
 				discounts.add(discountItemRepresentation);
